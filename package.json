@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.4.1",
+    "express": "^4.18.2",
+    "mysql2": "^3.9.1",
+    "nodemon": "^3.0.3",
+    "sequelize": "^6.36.0",
+    "sequelize-cli": "^6.6.2"
+  },
+  "name": "authservice",
+  "version": "1.0.0",
+  "description": "autherisation service",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "start": "npx nodemon src/index.js"
+  },
+  "author": "Swaraj Kaushik",
+  "license": "ISC"
+}
