@@ -18,6 +18,26 @@ class UserService {
     }
   }
 
+  async signIn(email, plainPassword) {
+    try {
+      //step1: fetch the user using email
+      const user = await this.userRepository.getByEmail(email);
+      //step2: compare the incoming password and stored encrypted password
+      const passwordMatch = this.checkPassword(plainPassword, user.password);
+
+      if (!passwordMatch) {
+        console.log("Password dosen't match");
+        throw { error: "Incorrect password" };
+      }
+      //step3: if password matches then create the token and return it to the user
+      const jwt_token = this.createToken({ email: user.email, id: user.id });
+      return jwt_token;
+    } catch (error) {
+      console.log("Something went wrong in signin process");
+      throw error;
+    }
+  }
+
   createToken(user) {
     try {
       const result = jwt.sign(user, JWT_KEY, { expiresIn: "1d" });
@@ -42,10 +62,10 @@ class UserService {
     try {
       return bcrypt.compareSync(userInputPlainPassword, encryptedPassword);
     } catch (error) {
-      console.log("Something went wrong in password comparison", error);
+      console.log("Something went wrong in password comparison");
       throw error;
     }
   }
 }
 
-module.exports = UserRepository;
+module.exports = UserService;

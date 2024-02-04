@@ -9,11 +9,34 @@ const create = async (req, res) => {
       password: req?.body?.password,
     });
     return res.status(201).json({
-        data: response,
-        success: true,
-        message: "New user created",
-        err: {}
-    })
+      data: response,
+      success: true,
+      message: "New user created",
+      err: {},
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Something went wrong",
+      data: {},
+      success: false,
+      err: error,
+    });
+  }
+};
+
+const signIn = async (req, res) => {
+  try {
+    const response = await userService.signIn(
+      req.body.email,
+      req.body.password
+    );
+    return res.status(200).json({
+      data: response,
+      success: true,
+      message: "Successfully signed in",
+      err: {},
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({
@@ -27,4 +50,5 @@ const create = async (req, res) => {
 
 module.exports = {
   create,
+  signIn,
 };
