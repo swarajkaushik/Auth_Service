@@ -1,6 +1,8 @@
 const { where } = require("sequelize");
 const { User, Role } = require("../models/index");
 const ValidationError = require("../utils/validation-error");
+const ClientError = require("../utils/client-error");
+const StatusCode = require("http-status-codes");
 
 class UserRepository {
   async create(data) {
@@ -9,7 +11,7 @@ class UserRepository {
       return user;
     } catch (error) {
       console.log("Somethiong went wrong in repository layer");
-      if(error.name === "SequelizeValidationError") {
+      if (error.name === "SequelizeValidationError") {
         throw new ValidationError(error);
       }
       throw error;
@@ -49,6 +51,14 @@ class UserRepository {
           email: userEmail,
         },
       });
+      if (!user) {
+        throw new ClientError(
+          "AttributeNotFound",
+          "Invalid email sent in the request",
+          "Please check the email, as there is no recored found of the email",
+          StatusCode.default.NOT_FOUND
+        );
+      }
       return user;
     } catch (error) {
       console.log("Something went wrong in repository layer");
@@ -56,13 +66,13 @@ class UserRepository {
     }
   }
 
-  async isAdmin(userId){
+  async isAdmin(userId) {
     try {
       const user = await User.findByPk(userId);
       const adminRole = await Role.findOne({
         where: {
-          name: "ADMIN"
-        }
+          name: "ADMIN",
+        },
       });
       return user.hasRole(adminRole);
     } catch (error) {
